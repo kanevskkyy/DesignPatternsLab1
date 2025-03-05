@@ -1,14 +1,13 @@
 import creational.abstractfacory.Application;
 import creational.abstractfacory.GUIFactory;
 import creational.abstractfacory.WinFactory;
+import creational.builder.Garage;
+import creational.builder.Garden;
 import creational.builder.House;
-import creational.builder.HouseBuilder;
-import creational.builder.HouseDirector;
-import creational.builder.ConcreteHouseBuilder;
 import creational.factory.Developer;
 import creational.factory.DeveloperFactory;
 import creational.prototype.Car;
-import creational.singleton.Singleton;
+import creational.singleton.ThreadSafeDoubleCheckLocking;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,7 +19,6 @@ public class Main {
         cppDeveloper.writeCode();
         /* End */
 
-
         /* Abstract Factory */
         GUIFactory factory = new WinFactory();
         Application app = new Application(factory);
@@ -28,10 +26,14 @@ public class Main {
         /* End */
 
         /* Builder */
-        HouseBuilder builder = new ConcreteHouseBuilder();
-        HouseDirector director = new HouseDirector(builder);
-        House house = director.constructHouse();
+        House house = new House.Builder("concrete", "brick", "tile")
+                .withWindows("double-glazed")
+                .withGarage(new Garage(2, true))
+                .withGarden(new Garden(true, true, false))
+                .build();
+
         System.out.println(house);
+
         /* End */
 
         /* Prototype */
@@ -43,9 +45,8 @@ public class Main {
         /* End */
 
         /* Singleton */
-        Singleton instance1 = Singleton.getInstance();
-        Singleton instance2 = Singleton.getInstance();
-        System.out.println("Are both instances the same? " + (instance1 == instance2));
+        ThreadSafeDoubleCheckLocking singleton = ThreadSafeDoubleCheckLocking.getInstance();
+        System.out.println("Singleton instance: " + singleton);
         /* End */
     }
 }
